@@ -1,5 +1,6 @@
 import { View, StyleSheet } from "react-native";
-import Row from "./Row";
+import Row from "../components/Row";
+import useGameFinished from "../services/TicTacToe";
 
 export interface PositionType {
   top?: boolean;
@@ -8,7 +9,8 @@ export interface PositionType {
   left?: boolean;
 }
 
-export default function Grid() {
+export default function GridScreen() {
+  useGameFinished();
   return (
     <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
       <Row
