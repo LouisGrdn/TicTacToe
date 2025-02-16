@@ -1,7 +1,14 @@
 import { View, StyleSheet } from "react-native";
 import Row from "../components/Row";
-import { useEffect, useState } from "react";
-import { Game, getNextMove } from "../services/TicTacToe";
+import { useCallback, useEffect, useState } from "react";
+import {
+  Game,
+  getNextMove,
+  getWinner,
+  isGameFinished,
+} from "../services/TicTacToe";
+import EndModal from "../components/EndModal";
+import { useLocalSearchParams } from "expo-router";
 
 export interface PositionType {
   top?: boolean;
@@ -11,6 +18,7 @@ export interface PositionType {
 }
 
 export default function GridScreen() {
+  const { difficulty } = useLocalSearchParams();
   const [game, setGame] = useState<Game>({
     turn: 0,
     grid: [
@@ -20,10 +28,11 @@ export default function GridScreen() {
     ],
     currentPlayer: "Player",
   });
+  const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
     if (game.currentPlayer === "Bot") {
-      const new_grid = getNextMove(game.grid, game.turn).choice;
+      const new_grid = getNextMove(game.grid, game.turn, difficulty as string);
       setTimeout(() => {
         setGame((prev) => ({
           grid: new_grid,
@@ -34,37 +43,71 @@ export default function GridScreen() {
     }
   }, [game]);
 
+  useEffect(() => {
+    if (isGameFinished(game.grid, 0)) {
+      setGame((prev) => ({
+        ...prev,
+        winner: getWinner(game.grid),
+      }));
+      setTimeout(() => {
+        setIsVisible(true);
+      }, 1000);
+    }
+  }, [game.grid]);
+
+  const restartGame = useCallback(() => {
+    setGame({
+      turn: 0,
+      grid: [
+        [null, null, null],
+        [null, null, null],
+        [null, null, null],
+      ],
+      currentPlayer: "Player",
+      winner: undefined,
+    });
+    setIsVisible(false);
+  }, [setIsVisible, setGame, game]);
+
   return (
-    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-      <Row
-        positions={[
-          { top: true, left: true },
-          { top: true },
-          { top: true, right: true },
-        ]}
-        values={{ index: 0, value: game.grid[0] }}
+    <>
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <Row
+          positions={[
+            { top: true, left: true },
+            { top: true },
+            { top: true, right: true },
+          ]}
+          rowIndex={0}
+          game={game}
+          setGame={setGame}
+        />
+        <View style={styles.horizontalSpacer} />
+        <Row
+          positions={[{ left: true }, {}, { right: true }]}
+          rowIndex={1}
+          game={game}
+          setGame={setGame}
+        />
+        <View style={styles.horizontalSpacer} />
+        <Row
+          positions={[
+            { bottom: true, left: true },
+            { bottom: true },
+            { bottom: true, right: true },
+          ]}
+          rowIndex={2}
+          game={game}
+          setGame={setGame}
+        />
+      </View>
+      <EndModal
         game={game}
-        setGame={setGame}
+        isVisible={isVisible}
+        setIsVisible={setIsVisible}
+        restartGame={restartGame}
       />
-      <View style={styles.horizontalSpacer} />
-      <Row
-        positions={[{ left: true }, {}, { right: true }]}
-        values={{ index: 1, value: game.grid[1] }}
-        game={game}
-        setGame={setGame}
-      />
-      <View style={styles.horizontalSpacer} />
-      <Row
-        positions={[
-          { bottom: true, left: true },
-          { bottom: true },
-          { bottom: true, right: true },
-        ]}
-        values={{ index: 2, value: game.grid[2] }}
-        game={game}
-        setGame={setGame}
-      />
-    </View>
+    </>
   );
 }
 
