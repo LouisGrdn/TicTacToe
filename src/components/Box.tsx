@@ -11,22 +11,25 @@ export interface BoxProps {
 }
 
 export default function Box({ value, game, onPress }: BoxProps) {
-  const [test, setTest] = useState<any>(null);
+  const [shape, setShape] = useState<any>(null);
 
   useEffect(() => {
     switch (value) {
       case 1:
-        setTest(<Cross />);
+        setShape(<Cross />);
         break;
       case 0:
-        setTest(<Circle />);
+        setShape(<Circle />);
+        break;
+      case null:
+        setShape(null);
         break;
     }
   }, [value]);
 
   return (
     <Pressable onPress={onPress} style={style.box}>
-      {test}
+      {shape}
     </Pressable>
   );
 }

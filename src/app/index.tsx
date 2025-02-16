@@ -1,6 +1,6 @@
 import React from "react";
-import GridScreen from "../screens/GridScreen";
+import SelectScreen from "../screens/SelectScreen";
 
 export default function Index() {
-  return <GridScreen />;
+  return <SelectScreen />;
 }

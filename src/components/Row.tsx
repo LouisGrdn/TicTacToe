@@ -6,14 +6,14 @@ import { useCallback } from "react";
 
 interface RowProps {
   positions: PositionType[];
-  values: { index: number; value: Array<Cell> };
+  rowIndex: number;
   game: Game;
   setGame: React.Dispatch<React.SetStateAction<Game>>;
 }
 
 export default function Row({
   positions = [],
-  values,
+  rowIndex,
   game,
   setGame,
 }: RowProps) {
@@ -31,7 +31,7 @@ export default function Row({
     (index: number) => () => {
       if (game.currentPlayer === "Player") {
         const new_grid = game.grid;
-        new_grid[values.index][index] = 0;
+        new_grid[rowIndex][index] = 0;
         setGame((prev) => ({
           currentPlayer: "Bot",
           grid: new_grid,
@@ -44,11 +44,11 @@ export default function Row({
 
   return (
     <View style={{ flexDirection: "row", justifyContent: "center" }}>
-      <Box value={values.value[0]} game={game} onPress={onPress(0)} />
+      <Box value={game.grid[rowIndex][0]} game={game} onPress={onPress(0)} />
       <View style={spacerStyle} />
-      <Box value={values.value[1]} game={game} onPress={onPress(1)} />
+      <Box value={game.grid[rowIndex][1]} game={game} onPress={onPress(1)} />
       <View style={spacerStyle} />
-      <Box value={values.value[2]} game={game} onPress={onPress(2)} />
+      <Box value={game.grid[rowIndex][2]} game={game} onPress={onPress(2)} />
     </View>
   );
 }
