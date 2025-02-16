@@ -1,23 +1,28 @@
 import { StyleSheet, Pressable } from "react-native";
 import Circle from "./Circle";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Cross from "./Cross";
+import { Cell, Game } from "../services/TicTacToe";
 
 export interface BoxProps {
-  position: {
-    left?: boolean;
-    right?: boolean;
-    top?: boolean;
-    bottom?: boolean;
-  };
+  value: Cell;
+  game: Game;
+  onPress: () => void;
 }
 
-export default function Box({ position = {} }: BoxProps) {
+export default function Box({ value, game, onPress }: BoxProps) {
   const [test, setTest] = useState<any>(null);
 
-  const onPress = () => {
-    setTest(<Cross />);
-  };
+  useEffect(() => {
+    switch (value) {
+      case 1:
+        setTest(<Cross />);
+        break;
+      case 0:
+        setTest(<Circle />);
+        break;
+    }
+  }, [value]);
 
   return (
     <Pressable onPress={onPress} style={style.box}>
