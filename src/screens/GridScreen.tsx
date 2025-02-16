@@ -31,6 +31,17 @@ export default function GridScreen() {
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
+    if (game.winner) return;
+    if (isGameFinished(game.grid, 0)) {
+      setGame((prev) => ({
+        ...prev,
+        winner: getWinner(game.grid),
+      }));
+      setTimeout(() => {
+        setIsVisible(true);
+      }, 1000);
+      return;
+    }
     if (game.currentPlayer === "Bot") {
       const new_grid = getNextMove(game.grid, game.turn, difficulty as string);
       setTimeout(() => {
@@ -42,18 +53,6 @@ export default function GridScreen() {
       }, 1000);
     }
   }, [game]);
-
-  useEffect(() => {
-    if (isGameFinished(game.grid, 0)) {
-      setGame((prev) => ({
-        ...prev,
-        winner: getWinner(game.grid),
-      }));
-      setTimeout(() => {
-        setIsVisible(true);
-      }, 1000);
-    }
-  }, [game.grid]);
 
   const restartGame = useCallback(() => {
     setGame({
