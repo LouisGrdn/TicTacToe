@@ -17,15 +17,17 @@ export interface PositionType {
   left?: boolean;
 }
 
+const initialGrid = [
+  [null, null, null],
+  [null, null, null],
+  [null, null, null],
+];
+
 export default function GridScreen() {
   const { difficulty } = useLocalSearchParams();
   const [game, setGame] = useState<Game>({
     turn: 0,
-    grid: [
-      [null, null, null],
-      [null, null, null],
-      [null, null, null],
-    ],
+    grid: initialGrid,
     currentPlayer: "Player",
   });
   const [isVisible, setIsVisible] = useState(false);
@@ -57,16 +59,12 @@ export default function GridScreen() {
   const restartGame = useCallback(() => {
     setGame({
       turn: 0,
-      grid: [
-        [null, null, null],
-        [null, null, null],
-        [null, null, null],
-      ],
+      grid: initialGrid,
       currentPlayer: "Player",
       winner: undefined,
     });
     setIsVisible(false);
-  }, [setIsVisible, setGame, game]);
+  }, []);
 
   return (
     <>
