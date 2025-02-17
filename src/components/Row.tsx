@@ -2,7 +2,7 @@ import { StyleSheet, View } from "react-native";
 import Box from "./Box";
 import { PositionType } from "../screens/GridScreen";
 import { Cell, Game } from "../services/TicTacToe";
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 
 interface RowProps {
   positions: PositionType[];
@@ -17,6 +17,7 @@ export default function Row({
   game,
   setGame,
 }: RowProps) {
+  const [isPressed, setIsPressed] = useState(false);
   const positionsValues = Object.values(positions);
   const isTop = !!positionsValues.find((position) => position.top);
   const isBottom = !!positionsValues.find((position) => position.bottom);
@@ -29,7 +30,12 @@ export default function Row({
 
   const onPress = useCallback(
     (index: number) => () => {
-      if (game.currentPlayer === "Player") {
+      if (
+        game.currentPlayer === "Player" &&
+        !game.grid[rowIndex][index] &&
+        !isPressed
+      ) {
+        setIsPressed(true);
         const new_grid = game.grid;
         new_grid[rowIndex][index] = 0;
         setGame((prev) => ({
@@ -38,8 +44,9 @@ export default function Row({
           turn: prev.turn + 1,
         }));
       }
+      setIsPressed(false);
     },
-    [game]
+    [game, setGame, isPressed, setIsPressed]
   );
 
   return (

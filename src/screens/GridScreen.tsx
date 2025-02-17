@@ -17,23 +17,22 @@ export interface PositionType {
   left?: boolean;
 }
 
-const initialGrid = [
-  [null, null, null],
-  [null, null, null],
-  [null, null, null],
-];
-
 export default function GridScreen() {
   const { difficulty } = useLocalSearchParams();
   const [game, setGame] = useState<Game>({
     turn: 0,
-    grid: initialGrid,
+    grid: [
+      [null, null, null],
+      [null, null, null],
+      [null, null, null],
+    ],
     currentPlayer: "Player",
   });
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
     if (game.winner) return;
+
     if (isGameFinished(game.grid, 0)) {
       setGame((prev) => ({
         ...prev,
@@ -59,7 +58,11 @@ export default function GridScreen() {
   const restartGame = useCallback(() => {
     setGame({
       turn: 0,
-      grid: initialGrid,
+      grid: [
+        [null, null, null],
+        [null, null, null],
+        [null, null, null],
+      ],
       currentPlayer: "Player",
       winner: undefined,
     });

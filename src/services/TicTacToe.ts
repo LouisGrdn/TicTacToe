@@ -8,7 +8,7 @@ export type Game = {
   turn: number;
   grid: Grid;
   currentPlayer: Player;
-  winner?: Player;
+  winner?: Player | "Draw";
 };
 
 export function getNextMove(grid: Grid, turn: number, difficulty: string) {
@@ -35,7 +35,7 @@ function getEasyBotMove(grid: Grid) {
   const [randomRow, randomCol] =
     nullCells[Math.floor(Math.random() * nullCells.length)];
 
-  const new_grid = grid;
+  const new_grid = grid.map((row) => [...row]);
   new_grid[randomRow][randomCol] = 1;
   return new_grid;
 }
@@ -83,7 +83,7 @@ function getAllGridChilds(grid: Grid, botTurn: boolean) {
   for (let i = 0; i < grid.length; i++) {
     for (let j = 0; j < grid[0].length; j++) {
       if (grid[i][j] === null) {
-        const child: Grid = JSON.parse(JSON.stringify(grid));
+        const child: Grid = grid.map((row) => [...row]);
         child[i][j] = botTurn ? 1 : 0;
         childs.push(child);
       }
@@ -100,7 +100,7 @@ export function isGameFinished(grid: Grid, depth: number) {
   return !grid.some((row) => row.some((cell) => cell === null));
 }
 
-export function getWinner(grid: Grid): Player | undefined {
+export function getWinner(grid: Grid): Player | "Draw" {
   const score = getScore(grid, 0);
   switch (score) {
     case 10:
@@ -108,7 +108,7 @@ export function getWinner(grid: Grid): Player | undefined {
     case -10:
       return "Player";
     default:
-      return undefined;
+      return "Draw";
   }
 }
 

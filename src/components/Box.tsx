@@ -14,17 +14,18 @@ export default function Box({ value, game, onPress }: BoxProps) {
   const [shape, setShape] = useState<any>(null);
 
   useEffect(() => {
-    switch (value) {
-      case 1:
-        setShape(<Cross />);
-        break;
-      case 0:
-        setShape(<Circle />);
-        break;
-      case null:
-        setShape(null);
-        break;
-    }
+    if (!shape || value === null)
+      switch (value) {
+        case 1:
+          setShape(<Cross />);
+          break;
+        case 0:
+          setShape(<Circle />);
+          break;
+        case null:
+          setShape(null);
+          break;
+      }
   }, [value]);
 
   return (

@@ -22,12 +22,13 @@ export default function EndModal({
         return "You lost !";
       case "Player":
         return "You won !";
-      default:
+      case "Draw":
         return "It's a draw !";
     }
   }, [game.winner]);
 
   const onBack = useCallback(() => {
+    restartGame();
     setIsVisible(false);
   }, [setIsVisible]);
 
